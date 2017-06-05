@@ -1,6 +1,19 @@
 var socket = io();
 
+function scrollToBottom() {
+}
+
 socket.on('connect', function () {
+  var params = $.deparam(window.location.search);
+
+  socket.emit('join', params, 'test', function(err) {
+    if (err) {
+      alert(err);
+      window.location.href = '/';
+    } else {
+      console.log('no err');
+    }
+  });
   console.log('Connected to server');
 });
 
@@ -8,23 +21,39 @@ socket.on('disconnect', function() {
   console.log('Unable to connect');
 });
 
-socket.on('newMessage', function(message) {
-  var formattedTime = moment(message.createdAt).format('h:mm a');
-  var li = $('<li></li>');
-  li.text(`${message.from} ${formattedTime}: ${message.text}`);
+socket.on('updateUserList', function(users) {
+  console.log('Users list ', users);
+});
 
-  $('#message').append(li);
+socket.on('newMessage', function(message) {
+  console.log('got new message');
+  var formattedTime = moment(message.createdAt).format('h:mm a');
+  var template = $('#message-template').html();
+  var html = Mustache.render(template, {
+    text : message.text,
+    from : message.from,
+    createdAt : formattedTime
+  });
+
+  $('#message').append(html);
+  scrollToBottom();
+})
+
+socket.on('updateUserList', function(users) {
+  console.log(users);
 })
 
 socket.on('newLocationMessage', function(message) {
   var formattedTime = moment(message.createdAt).format('h:mm a');
-  var li = $('<li></li>');
-  var a = $('<a target="_blank">My current location</a>');
+  var template = $('#location-message-template').html();
+  var html = Mustache.render(template, {
+    url : message.url,
+    from : message.from,
+    createdAt : formattedTime
+  })
 
-  li.text(`${message.from} ${formattedTime}:`);
-  a.attr('href', message.url);
-  li.append(a);
-  $('#message').append(li);
+  $('#message').append(html);
+  scrollToBottom();
 })
 
 $('#message-form').on('submit', function(e) {
@@ -55,7 +84,9 @@ locationButton.on('click', function() {
       latitude : position.coords.latitude,
       longitude : position.coords.longitude
     })
+    locationButton.attr('disabled','');
   }, function() {
+    locationButton.attr('disabled','');
     return alert('Unable to get location');
   })
 });
