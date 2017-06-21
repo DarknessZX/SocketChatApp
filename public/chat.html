@@ -6,16 +6,16 @@
     <link rel="stylesheet" href="/css/styles.css">
   </head>
   <body class="chat">
-    <div class="chat__sidebar">
+    <div class="chat_sidebar">
       <h3>People</h3>
       <div id="users">
       </div>
     </div>
 
-    <div class="chat__main">
-      <ol id="message" class="chat__messages"></ol>
+    <div class="chat_main">
+      <ol id="message" class="chat_messages"></ol>
 
-      <div class="chat__footer">
+      <div class="chat_footer">
         <form id="message-form">
           <input name="message" type="text" placeholder="Message"/>
           <button>Send</button>
@@ -26,11 +26,11 @@
 
     <script id="message-template" type="text/template">
       <li class="message">
-        <div class="message__title">
+        <div class="message_title">
           <h4>{{from}}</h4>
           <span>{{createdAt}}</span>
         </div>
-        <div class="message__body">
+        <div class="message_body">
           <p>{{text}}</p>
         </div>
       </li>
@@ -38,11 +38,11 @@
 
     <script id="location-message-template" type="text/template">
       <li class="message">
-        <div class="message__title">
+        <div class="message_title">
           <h4>{{from}}</h4>
           <span>{{createdAt}}</span>
         </div>
-        <div class="message__body">
+        <div class="message_body">
           <p>
             <a href="{{url}}" target="_blank">My current location</a>
           </p>
